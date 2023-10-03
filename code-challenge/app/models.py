@@ -26,7 +26,7 @@ class Power(db.Model):
     def __repr__(self):
         return f'Power(id={self.id}, name={self.name},description={self.description})'
     
-    @validates('description',)
+    @validates(description)
     def validate_description(self,unique,value):
         if  not len(value)<20 :
             raise ValueError("Should be atleast 20 characters")
@@ -35,20 +35,24 @@ class Power(db.Model):
 
 class HeroPower(db.Model):
     __tablename__ = 'heropower'
-
-    strength = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    strength = db.Column(db.Integer)
     power_id=db.Column(db.Integer, db.ForeignKey('power.id'))
     hero_id=db.Column(db.Integer, db.ForeignKey('hero.id'))
 
 #validations
 
-    @validates('strength',)
+    @validates(strength)
     def validate_strength(self,unique,value):
+        valid_strengths = ['Strong', 'Weak', 'Average']
+        if value not in valid_strengths:
+            raise ValueError("Invalid strength. Please enter 'Strong', 'Weak', or 'Average'.")
+        return value
              
-            if not  'Strong' 'Weak' 'Average' in value:
-                 raise ValueError("Name found please entre another name")
-            return value
+            # if not  'Strong' 'Weak' 'Average' in value:
+            #      raise ValueError("Name found please entre another name")
+            # return value
        
     
     def __repr__(self):
-        return f'HeroPower(id={self.id}, power_id={self.power_id},hero_id={self.hero_id})'
+        return f'HeroPower(strength={self.strength}, power_id={self.power_id},hero_id={self.hero_id})'
